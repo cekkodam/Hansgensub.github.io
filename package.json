@@ -1,0 +1,9 @@
+{
+"name": "hansgensub",
+"version": "1.0.0",
+"dependencies": {
+"form-data": "^4.0.0",
+"formidable": "^3.5.2",
+"node-fetch": "^2.6.7"
+}
+}
