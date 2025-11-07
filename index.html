@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>HansGenSub — Auto Subtitle Generator</title>
+<style>
+body{font-family:Inter,system-ui,Arial;background:#f6f8fb;color:#0b1726;margin:0;padding:24px;display:flex;align-items:center;justify-content:center;min-height:100vh}
+.card{width:100%;max-width:760px;background:#fff;border-radius:12px;padding:20px;box-shadow:0 8px 30px rgba(16,24,40,0.06)}
+h1{margin:0 0 8px;font-size:20px;color:#06203a}
+p.lead{margin:0 0 16px;color:#556b82}
+.row{display:flex;gap:16px;align-items:center}
+input[type=file],select{padding:10px;border-radius:8px;border:1px solid #e6eef8;background:#fff;color:#081124}
+button{padding:10px 14px;border-radius:8px;border:none;background:#0b76ff;color:#fff;cursor:pointer}
+button:disabled{opacity:0.6}
+#status{margin-top:12px;color:#556b82}
+.progress{height:10px;background:#eef3ff;border-radius:6px;overflow:hidden;margin-top:8px}
+.progress>i{display:block;height:100%;width:0;background:linear-gradient(90deg,#7cc1ff,#0b76ff)}
+.result{margin-top:14px}
+</style>
+</head>
+<body>
+<div class="card">
+<h1>HansGenSub — Auto Subtitle Generator</h1>
+<p class="lead">Upload MP4/MKV, pilih bahasa, lalu tekan <strong>Generate</strong>. Subtitle (.srt) akan terdownload otomatis.</p>
+
+
+<div style="display:flex;gap:12px;flex-wrap:wrap">
+<input id="fileInput" type="file" accept="video/mp4,video/mkv" />
+<select id="language">
+<option value="auto">Auto Detect</option>
+</html>
