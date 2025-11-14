@@ -21,7 +21,7 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            height: 60vh; /* Tinggi header lebih besar untuk efek spanduk */
+            height: 50vh; /* Tinggi header lebih besar untuk efek spanduk */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -92,6 +92,26 @@
             height: 400px;
             margin-top: 20px;
         }
+        #dataList {
+            list-style: none;
+            padding: 0;
+        }
+        #dataList li {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+        #dataList img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
         @media (max-width: 768px) {
             .container {
                 padding: 10px;
@@ -104,6 +124,15 @@
             }
             header {
                 height: 40vh; /* Tinggi header lebih kecil di mobile */
+            }
+            #dataList li {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            #dataList img {
+                width: 100%;
+                height: auto;
+                max-height: 150px;
             }
         }
     </style>
@@ -134,6 +163,10 @@
             <label for="perkembangan">Catatan Perkembangan:</label>
             <textarea id="perkembangan" rows="4" placeholder="Contoh: Bisa berjalan, mulai bicara, dll."></textarea>
 
+            <!-- Tambahan: Input untuk foto -->
+            <label for="foto">Foto Perkembangan (Opsional, max 5MB, format: JPG/PNG):</label>
+            <input type="file" id="foto" accept="image/*">
+
             <button type="submit">Simpan Data</button>
         </form>
 
@@ -161,8 +194,35 @@
             const tinggi = parseFloat(document.getElementById('tinggi').value);
             const berat = parseFloat(document.getElementById('berat').value);
             const perkembangan = document.getElementById('perkembangan').value;
+            const fotoInput = document.getElementById('foto');
 
-            data.push({ nama, tanggalLahir, usia, tinggi, berat, perkembangan });
+            let fotoBase64 = null;
+            if (fotoInput.files.length > 0) {
+                const file = fotoInput.files[0];
+                // Validasi: Cek ukuran file (max 5MB) dan tipe
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('Ukuran file terlalu besar! Maksimal 5MB.');
+                    return;
+                }
+                if (!file.type.startsWith('image/')) {
+                    alert('File harus berupa gambar (JPG/PNG)!');
+                    return;
+                }
+                // Konversi ke base64
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    fotoBase64 = event.target.result;
+                    data.push({ nama, tanggalLahir, usia, tinggi, berat, perkembangan, foto: fotoBase64 });
+                    localStorage.setItem('anakData', JSON.stringify(data));
+                    updateDisplay();
+                    form.reset();
+                };
+                reader.readAsDataURL(file);
+                return; // Tunggu reader selesai
+            }
+
+            // Jika tidak ada foto, simpan tanpa foto
+            data.push({ nama, tanggalLahir, usia, tinggi, berat, perkembangan, foto: fotoBase64 });
             localStorage.setItem('anakData', JSON.stringify(data));
             updateDisplay();
             form.reset();
@@ -176,8 +236,22 @@
             const beratData = [];
 
             data.forEach(item => {
+                // Buat elemen li dengan gambar dan teks
                 const li = document.createElement('li');
-                li.textContent = `${item.nama} (Usia: ${item.usia} bulan) - Tinggi: ${item.tinggi} cm, Berat: ${item.berat} kg. Perkembangan: ${item.perkembangan}`;
+                const img = document.createElement('img');
+                if (item.foto) {
+                    img.src = item.foto;
+                    img.alt = 'Foto Perkembangan';
+                } else {
+                    img.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjZGRkIi8+Cjx0ZXh0IHg9IjQwIiB5PSI0NSIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+VGFrIEFkYSBGb3RvPC90ZXh0Pgo8L3N2Zz4='; // Placeholder SVG
+                    img.alt = 'Tidak ada foto';
+                }
+                li.appendChild(img);
+
+                const textDiv = document.createElement('div');
+                textDiv.innerHTML = `<strong>${item.nama}</strong> (Usia: ${item.usia} bulan) - Tinggi: ${item.tinggi} cm, Berat: ${item.berat} kg.<br>Perkembangan: ${item.perkembangan}`;
+                li.appendChild(textDiv);
+
                 dataList.appendChild(li);
 
                 usiaLabels.push(item.usia);
